@@ -1,16 +1,19 @@
-"""MythCode - Streamlit front end (Phase 1: prepared story, no AI calls yet)."""
+"""MythCode - Streamlit front end (Phase 2: prepared story + three playable puzzles, no AI calls yet)."""
 import streamlit as st
 
 from core.game_engine import apply_choice, get_scene_view
 from core.quest_manager import load_content, quest_summary
 from core.state_manager import new_game_state, state_from_json, state_to_json
-from models.learning import CONCEPTS
+from core.game_engine import reveal_for
+from core.learning_engine import UNDERSTANDING_LABELS, next_recommendation, understanding
+from models.learning import CONCEPT_LABELS, CONCEPTS
 from models.player import ROLES, STYLES
 from models.world import WATER_STATES
 from utils.config import llm_status
 from utils.error_handler import MythCodeError, user_message
 from utils.logger import get_logger
 from utils.validators import InputError, validate_character
+from ui.puzzle_panels import render_puzzle, render_reveal
 
 log = get_logger()
 TAGLINE = "An adaptive fantasy world where every choice teaches you something."
@@ -33,7 +36,11 @@ div.stButton > button:hover { border-color: #c9a24d; background: #fbf4df; color:
     unsafe_allow_html=True,
 )
 
-content = load_content()
+try:
+    content = load_content()
+except MythCodeError as exc:
+    st.error(user_message(exc))
+    st.stop()
 ss = st.session_state
 ss.setdefault("screen", "welcome")
 ss.setdefault("game", None)
@@ -125,8 +132,13 @@ def tab_adventure(game: dict):
     if ss.flash:
         st.info(ss.flash)
         ss.flash = None
+    if view["reveal"]:
+        render_reveal(view["reveal"])
+    if view["puzzle"]:
+        render_puzzle(game, view, content)
+        return
     if view["is_end"]:
-        st.success("The water flows again. More challenges (the clockwork guardian) arrive in the next build phase.")
+        st.success("You have finished this chapter of MythCode. The AI storyteller and a world that adapts to how you play arrive in later build phases.")
         if st.button("Begin a new adventure"):
             reset_game()
             st.rerun()
@@ -156,12 +168,24 @@ def tab_quests(game: dict):
 
 def tab_learning(game: dict):
     st.header("The Unwritten Journal")
-    st.caption("Concepts appear here once you meet them in play. Python examples unlock after you solve the challenge.")
-    labels = {"sequence": "Sequence", "conditions": "Conditions", "loops": "Loops"}
+    st.caption("Concepts appear here once you meet them in play. A Python example unlocks after you solve its challenge.")
+    learning = game["learning"]
+    solved = sum(learning["concepts"][c]["solved"] for c in CONCEPTS)
+    st.progress(solved / len(CONCEPTS))
+    st.caption(f"{solved} of {len(CONCEPTS)} mechanics solved")
     for concept in CONCEPTS:
-        p = game["learning"]["concepts"][concept]
-        status = "Solved" if p["solved"] else "Encountered" if p["introduced"] else "Not yet encountered"
-        st.markdown(f"**{labels[concept]}**: {status} · attempts: {p['attempts']}")
+        p = learning["concepts"][concept]
+        label = CONCEPT_LABELS[concept]
+        if not p["introduced"]:
+            st.markdown(f"**{label}** · not yet encountered")
+            continue
+        state = "Solved" if p["solved"] else "In progress"
+        st.markdown(f"**{label}** · {state} · attempts: {p['attempts']} · hints used: {p['hints_used']}")
+        if p["solved"]:
+            st.caption(UNDERSTANDING_LABELS[understanding(p)] + " (this challenge only).")
+        if p["python_unlocked"]:
+            render_reveal(reveal_for(concept, content), compact=True)
+    st.info(next_recommendation(learning)["message"])
 
 
 def tab_world(game: dict):
