@@ -28,6 +28,10 @@ class StorageError(MythCodeError):
     """Saved data could not be read or written."""
 
 
+class PuzzleInputError(MythCodeError):
+    """A puzzle submission is malformed. This is not a wrong answer, so it is not counted as an attempt."""
+
+
 class AIResponseError(MythCodeError):
     """The AI returned empty, malformed or unexpected output."""
 
@@ -36,6 +40,8 @@ def user_message(exc: BaseException) -> str:
     """A safe, non-technical message for the player. Never includes secrets."""
     if isinstance(exc, ConfigError):
         return f"Setup problem: {redact(str(exc))}"
+    if isinstance(exc, PuzzleInputError):
+        return str(exc)
     if isinstance(exc, StateValidationError):
         return "That action couldn't be applied, so your adventure was left unchanged."
     if isinstance(exc, StorageError):
