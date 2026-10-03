@@ -4,6 +4,7 @@ import json
 import uuid
 from dataclasses import asdict
 
+from core.learning_engine import normalize_learning
 from core.quest_manager import GameContent
 from core.state_validator import validate_world_state
 from models.learning import LearningProgress
@@ -60,4 +61,5 @@ def state_from_json(text, content: GameContent) -> dict:
     problems = validate_world_state(state["world"], content.locations, content.quests)
     if problems:
         raise StorageError("Save file world data is invalid: " + problems[0])
+    state["learning"] = normalize_learning(state["learning"])  # fills new fields; raises StorageError if impossible
     return state
