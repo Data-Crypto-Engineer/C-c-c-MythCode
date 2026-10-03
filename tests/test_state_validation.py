@@ -90,3 +90,17 @@ def test_corrupted_world_detected():
     w = world()
     w["completed_quests"] = ["water_crisis", "water_crisis"]
     assert validate_world_state(w, C.locations, C.quests)
+
+
+def test_start_quest_only_after_current_quest_is_finished():
+    assert rejects({"start_quest": "guardian_trial"})  # water_crisis still unresolved
+    w = world()
+    new, _ = apply_effects(w, {"complete_quest": "water_crisis", "start_quest": "guardian_trial"}, **KW)
+    assert new["active_quest"] == "guardian_trial" and new["completed_quests"] == ["water_crisis"]
+
+
+def test_start_quest_rejects_unknown_or_completed():
+    w = world()
+    w["completed_quests"] = ["water_crisis"]
+    assert rejects({"start_quest": "dragon_hunt"}, w)
+    assert rejects({"start_quest": "water_crisis"}, w)
