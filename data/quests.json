@@ -17,6 +17,11 @@
           "title": "Search for an underground spring"
         }
       ]
+    },
+    "guardian_trial": {
+      "title": "The Clockwork Guardian",
+      "description": "Mira's workshop hides a dormant clockwork guardian. Teach it, one lesson at a time, to protect the village.",
+      "pathways": []
     }
   },
   "scenes": {
@@ -497,6 +502,217 @@
           "only_if_alt": true
         }
       ],
+      "choices": [
+        {
+          "id": "visit_workshop",
+          "label": "Follow Mira to her workshop",
+          "next": "guardian_intro",
+          "effects": {
+            "discover": [
+              "mira_workshop"
+            ],
+            "move_to": "mira_workshop",
+            "start_quest": "guardian_trial",
+            "record_choice": {
+              "id": "visit_workshop",
+              "text": "Followed Mira to her workshop."
+            }
+          }
+        }
+      ]
+    },
+    "guardian_intro": {
+      "title": "The Sleeping Guardian",
+      "location": "mira_workshop",
+      "text": "Behind the workshop door stands a tall figure of brass and oak: a clockwork guardian, perfectly still, with a keyhole in its chest. It was built to protect the village, but it only does exactly what it is told, in exactly the order it is told.",
+      "dialogue": [
+        {
+          "npc": "mira",
+          "line": "Nobody has managed to wake it. Will you help me teach it?",
+          "alts": [
+            {
+              "needs_memory": "rebuilt_wheel",
+              "line": "After the way you rebuilt that waterwheel, I think you can handle a guardian. Will you help me teach it?"
+            },
+            {
+              "needs_memory": "channeled_spring",
+              "line": "You channelled that spring so neatly. A guardian should be no trouble. Will you help me teach it?"
+            },
+            {
+              "needs_memory": "shared_spring",
+              "line": "You shared the spring with the valley; I trust your judgement. Will you help me teach the guardian?"
+            }
+          ]
+        }
+      ],
+      "choices": [
+        {
+          "id": "help_guardian",
+          "label": "Help Mira teach the guardian",
+          "next": "guardian_seq",
+          "effects": {
+            "remember": {
+              "mira": {
+                "offered_guardian_help": "Player offered to help teach the clockwork guardian."
+              }
+            },
+            "record_choice": {
+              "id": "guardian_start",
+              "text": "Agreed to help Mira teach the clockwork guardian."
+            }
+          }
+        }
+      ]
+    },
+    "guardian_seq": {
+      "title": "A Lesson in Order",
+      "location": "mira_workshop",
+      "text": "Mira chalks a small room onto the workshop floor. The guardian stands at one side; a brass pedestal waits across the room, and a stone block stands in the way.",
+      "dialogue": [
+        {
+          "npc": "mira",
+          "line": "It follows your instructions one at a time, exactly as given. No guessing."
+        }
+      ],
+      "puzzle": "sequence_room",
+      "on_solve": {
+        "next": "guardian_seq_done",
+        "effects": {
+          "set": {
+            "clockwork_guardian": "awakened"
+          },
+          "add": {
+            "village_morale": 5
+          },
+          "remember": {
+            "mira": {
+              "guardian_walked": "Player guided the guardian across the room to the pedestal."
+            }
+          },
+          "record_choice": {
+            "id": "guardian_sequence",
+            "text": "Guided the clockwork guardian across the room."
+          }
+        }
+      }
+    },
+    "guardian_seq_done": {
+      "title": "The Guardian Wakes",
+      "location": "mira_workshop",
+      "text": "Gears whir and the guardian turns its amber gaze on you. For the first time in years, it moves because someone told it how.",
+      "dialogue": [
+        {
+          "npc": "mira",
+          "line": "Order matters. Swap two of those steps and it would have walked straight into the block."
+        }
+      ],
+      "reveal": "sequence",
+      "choices": [
+        {
+          "id": "to_cellar",
+          "label": "Lead the guardian to the cellar door",
+          "next": "guardian_door",
+          "effects": {}
+        }
+      ]
+    },
+    "guardian_door": {
+      "title": "The Locked Cellar Door",
+      "location": "mira_workshop",
+      "text": "Beneath the workshop lies the cellar where Mira keeps her spare parts. The door opens only for whoever carries the brass key. Sometimes the guardian has it, and sometimes it doesn't.",
+      "dialogue": [
+        {
+          "npc": "mira",
+          "line": "Don't give it a single command. Give it a rule it can apply every time."
+        }
+      ],
+      "puzzle": "conditions_door",
+      "on_solve": {
+        "next": "guardian_door_done",
+        "effects": {
+          "add": {
+            "village_morale": 5
+          },
+          "remember": {
+            "mira": {
+              "taught_door_rule": "Player taught the guardian a rule for the cellar door."
+            }
+          },
+          "record_choice": {
+            "id": "guardian_rule",
+            "text": "Taught the guardian a rule for the cellar door."
+          }
+        }
+      }
+    },
+    "guardian_door_done": {
+      "title": "A Guardian That Decides",
+      "location": "mira_workshop",
+      "text": "The cellar door opens, and the guardian steps through as if it had always known how to choose.",
+      "dialogue": [
+        {
+          "npc": "mira",
+          "line": "A rule that checks first and acts second. That is how a machine decides."
+        }
+      ],
+      "reveal": "conditions",
+      "choices": [
+        {
+          "id": "to_river",
+          "label": "Take the guardian to the river path",
+          "next": "guardian_loop",
+          "effects": {}
+        }
+      ]
+    },
+    "guardian_loop": {
+      "title": "Five Tiles to the River",
+      "location": "mira_workshop",
+      "text": "A narrow path of five identical tiles leads down to the river. The guardian's memory is small, and it can hold only two instructions at once.",
+      "dialogue": [
+        {
+          "npc": "mira",
+          "line": "Writing the same step five times would never fit. Teach it to repeat."
+        }
+      ],
+      "puzzle": "loops_path",
+      "on_solve": {
+        "next": "guardian_epilogue",
+        "effects": {
+          "set": {
+            "clockwork_guardian": "guarding"
+          },
+          "add": {
+            "village_morale": 10
+          },
+          "complete_quest": "guardian_trial",
+          "remember": {
+            "mira": {
+              "taught_loop": "Player taught the guardian to repeat its steps."
+            }
+          },
+          "record_choice": {
+            "id": "guardian_loop",
+            "text": "Taught the guardian to cross the river path by repeating a step."
+          }
+        }
+      }
+    },
+    "guardian_epilogue": {
+      "title": "The Village Guardian",
+      "location": "mira_workshop",
+      "text": "By evening the clockwork guardian stands watch beside the well. It follows the rules you taught it: in order, by condition, and by repetition.",
+      "dialogue": [
+        {
+          "npc": "elder_oren",
+          "line": "The village sleeps easier tonight, and we owe it to you."
+        },
+        {
+          "npc": "mira",
+          "line": "You did more than wake a machine. You taught it to think in steps. I'll never forget it."
+        }
+      ],
+      "reveal": "loops",
       "choices": []
     }
   }
