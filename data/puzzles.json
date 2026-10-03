@@ -1,0 +1,94 @@
+{
+  "puzzles": {
+    "sequence_room": {
+      "concept": "sequence",
+      "kind": "sequence",
+      "title": "Guide the Guardian",
+      "instructions": "Give the guardian instructions, one after another, so it ends on the pedestal (★). It follows them in exactly the order you give. It starts facing right (▶).",
+      "config": {
+        "width": 4,
+        "height": 3,
+        "start": {"x": 0, "y": 0, "facing": "east"},
+        "goal": {"x": 2, "y": 1},
+        "walls": [{"x": 1, "y": 1}],
+        "actions": ["forward", "turn_right", "turn_left"],
+        "max_instructions": 8
+      },
+      "hints": [
+        "The guardian does one instruction at a time, from first to last. Picture it walking before you press Run.",
+        "A stone block (▓) stands in the middle of the room. Plan a route that goes around it.",
+        "Try walking along the top row first, then turning toward the pedestal."
+      ],
+      "success": "The guardian reaches the pedestal and its eyes glow amber.",
+      "reveal": {
+        "name": "Sequential execution",
+        "python": "move_forward()\nmove_forward()\nturn_right()\nmove_forward()",
+        "explanation": "A program runs its instructions one after another, in the order they are written. Change the order and you change the result. move_forward() and turn_right() are functions we invented for the guardian; in real Python you define or import functions like these, and calling one is written as its name followed by ()."
+      }
+    },
+    "conditions_door": {
+      "concept": "conditions",
+      "kind": "conditional",
+      "title": "Teach the Guardian a Rule",
+      "instructions": "The cellar door opens only if the guardian carries the brass key. Build one rule (IF ... THEN ... ELSE ...) and test it. It must work in both situations.",
+      "config": {
+        "conditions": [
+          {"id": "has_key", "label": "the guardian has the key", "var": "has_key", "negate": false},
+          {"id": "no_key", "label": "the guardian does NOT have the key", "var": "has_key", "negate": true},
+          {"id": "door_locked", "label": "the door is locked", "var": "door_locked", "negate": false}
+        ],
+        "actions": [
+          {"id": "open_door", "label": "open the door"},
+          {"id": "search_for_key", "label": "search for the key"},
+          {"id": "wait", "label": "wait"}
+        ],
+        "scenarios": [
+          {
+            "label": "the guardian carries the brass key",
+            "facts": {"has_key": true, "door_locked": true},
+            "expected": "open_door"
+          },
+          {
+            "label": "the guardian has no key",
+            "facts": {"has_key": false, "door_locked": true},
+            "expected": "search_for_key"
+          }
+        ]
+      },
+      "hints": [
+        "A rule has three parts: a question, what to do if the answer is yes, and what to do if it is no.",
+        "Your rule is tested in both situations. It has to give the right result in each one.",
+        "The door is locked in both situations, so the question should be about something that differs between them: the key."
+      ],
+      "success": "The cellar door swings open, and the guardian's rule works whether or not it holds the key.",
+      "reveal": {
+        "name": "Conditional logic",
+        "python": "if has_key:\n    open_door()\nelse:\n    search_for_key()",
+        "explanation": "An if statement checks a condition that is either True or False. If it is True, the indented block under if runs; otherwise the block under else runs. Here has_key is a variable holding True or False. The indentation (four spaces) tells Python which lines belong to each branch."
+      }
+    },
+    "loops_path": {
+      "concept": "loops",
+      "kind": "loop",
+      "title": "Five Tiles to the River",
+      "instructions": "The guardian must walk across five identical tiles and stop on the last one (★). Its memory can only hold a few instructions, so you will need to make one instruction do the work of several.",
+      "config": {
+        "length": 5,
+        "max_slots": 2,
+        "max_repeat": 9,
+        "ops": ["forward", "repeat"]
+      },
+      "hints": [
+        "Count the tiles: the guardian must take exactly five steps forward.",
+        "Its memory holds only two instructions, so a single instruction has to cover several steps.",
+        "A Repeat instruction runs the same step many times. Try Repeat 5 × forward, or one forward step plus a smaller repeat."
+      ],
+      "success": "The guardian crosses all five tiles and stops at the river's edge.",
+      "reveal": {
+        "name": "Loops",
+        "python": "for step in range(5):\n    move_forward()",
+        "explanation": "A for loop repeats a block of code. range(5) produces five values (0, 1, 2, 3, 4), so the indented line runs five times. The indentation shows which lines belong to the loop. Loops save you from writing the same instruction again and again."
+      }
+    }
+  }
+}
