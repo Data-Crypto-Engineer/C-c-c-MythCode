@@ -51,7 +51,8 @@ def test_all_three_pathways_complete():
         s = play(path)
         assert s["world"]["completed_quests"] == ["water_crisis"]
         assert s["world"]["water_supply"] == "restored"
-        assert get_scene_view(s, C)["is_end"]
+        view = get_scene_view(s, C)  # the water quest ends; Mira's workshop (Phase 2) is the next step
+        assert not view["is_end"] and [c[0] for c in view["choices"]] == ["visit_workshop"]
 
 
 def test_choices_leave_persistent_traces():
