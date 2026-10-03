@@ -9,7 +9,7 @@ from typing import Iterable, Tuple
 from models.world import BOUNDED_FIELDS, GUARDIAN_STATES, WATER_STATES
 from utils.error_handler import StateValidationError
 
-ALLOWED_EFFECT_KEYS = {"set", "add", "move_to", "discover", "complete_quest", "record_choice", "remember"}
+ALLOWED_EFFECT_KEYS = {"set", "add", "move_to", "discover", "complete_quest", "start_quest", "record_choice", "remember"}
 REQUIRED_WORLD_KEYS = (
     "kingdom", "current_location", "water_supply", "forest_spirit_trust", "clockwork_guardian",
     "village_morale", "active_quest", "completed_quests", "discovered_locations",
@@ -128,6 +128,17 @@ def apply_effects(world: dict, effects: dict, *, locations: Iterable[str], npcs:
             issues.append(f"Quest '{quest_id}' is already completed.")
         else:
             new["completed_quests"].append(quest_id)
+
+    started = effects.get("start_quest")
+    if started is not None:
+        if started not in quests:
+            issues.append(f"Unknown quest '{started}'.")
+        elif started in new["completed_quests"]:
+            issues.append(f"Quest '{started}' is already completed.")
+        elif new["active_quest"] not in new["completed_quests"]:
+            issues.append("Finish the current quest before starting another.")
+        else:
+            new["active_quest"] = started
 
     choice = effects.get("record_choice")
     if choice is not None:
