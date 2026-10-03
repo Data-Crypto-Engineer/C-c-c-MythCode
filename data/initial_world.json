@@ -1,0 +1,25 @@
+{
+  "locations": {
+    "whispering_village": {"name": "Whispering Village", "description": "A hillside village whose well has fallen silent."},
+    "old_waterwheel": {"name": "The Old Waterwheel", "description": "A mossy wheel of oak and iron beside the river."},
+    "whispering_forest": {"name": "Whispering Forest", "description": "Tall pines where the forest spirit is said to dwell."}
+  },
+  "npcs": {
+    "mira": {"name": "Mira", "role": "Village inventor", "bio": "Quick-witted tinkerer who keeps the village's machines running."},
+    "elder_oren": {"name": "Elder Oren", "role": "Village elder", "bio": "Calm, careful, and worried about the dry well."},
+    "lumen": {"name": "Lumen", "role": "Forest spirit", "bio": "A shimmering presence who guards the river's source."}
+  },
+  "initial_state": {
+    "kingdom": "Elarion",
+    "current_location": "whispering_village",
+    "water_supply": "stopped",
+    "forest_spirit_trust": 20,
+    "clockwork_guardian": "inactive",
+    "village_morale": 60,
+    "active_quest": "water_crisis",
+    "completed_quests": [],
+    "discovered_locations": ["whispering_village"],
+    "important_choices": [],
+    "character_memories": {}
+  }
+}

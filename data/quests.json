@@ -1,0 +1,503 @@
+{
+  "quests": {
+    "water_crisis": {
+      "title": "The Silent Well",
+      "description": "The water supply of Whispering Village has stopped. Find out why, and decide how to restore it.",
+      "pathways": [
+        {
+          "id": "waterwheel",
+          "title": "Mend the broken waterwheel"
+        },
+        {
+          "id": "spirit",
+          "title": "Negotiate with the forest spirit"
+        },
+        {
+          "id": "underground",
+          "title": "Search for an underground spring"
+        }
+      ]
+    }
+  },
+  "scenes": {
+    "start": {
+      "title": "The Silent Well",
+      "location": "whispering_village",
+      "text": "Dawn light creeps over Whispering Village. Buckets sit empty beside the well, and no one speaks above a murmur. Three trails lead out from the square.",
+      "dialogue": [
+        {
+          "npc": "elder_oren",
+          "line": "The water stopped three nights ago, traveler. Someone must learn why before the village loses hope."
+        }
+      ],
+      "choices": [
+        {
+          "id": "go_waterwheel",
+          "label": "Investigate the broken waterwheel",
+          "next": "wheel_1",
+          "effects": {
+            "discover": [
+              "old_waterwheel"
+            ],
+            "move_to": "old_waterwheel",
+            "record_choice": {
+              "id": "path_waterwheel",
+              "text": "Went to inspect the broken waterwheel."
+            }
+          }
+        },
+        {
+          "id": "go_spirit",
+          "label": "Seek the forest spirit",
+          "next": "spirit_1",
+          "effects": {
+            "discover": [
+              "whispering_forest"
+            ],
+            "move_to": "whispering_forest",
+            "record_choice": {
+              "id": "path_spirit",
+              "text": "Went into the forest to find the spirit."
+            }
+          }
+        },
+        {
+          "id": "go_underground",
+          "label": "Search the village cellars for another water source",
+          "next": "underground_1",
+          "effects": {
+            "record_choice": {
+              "id": "path_underground",
+              "text": "Searched the cellars for a hidden spring."
+            }
+          }
+        }
+      ]
+    },
+    "wheel_1": {
+      "title": "The Jammed Gears",
+      "location": "old_waterwheel",
+      "text": "The great wheel hangs motionless, its gears locked by a cracked axle pin. Mira is already here, sleeves rolled up.",
+      "dialogue": [
+        {
+          "npc": "mira",
+          "line": "It's the pin. I can fix it properly, but it takes two pairs of hands and a lot of patience."
+        }
+      ],
+      "choices": [
+        {
+          "id": "repair_gears",
+          "label": "Help Mira repair the gears piece by piece",
+          "next": "wheel_2",
+          "effects": {
+            "add": {
+              "village_morale": 10
+            },
+            "set": {
+              "water_supply": "damaged"
+            },
+            "remember": {
+              "mira": {
+                "helped_repair": "Player helped Mira repair the waterwheel gears."
+              }
+            },
+            "record_choice": {
+              "id": "wheel_repair",
+              "text": "Carefully repaired the waterwheel with Mira."
+            }
+          }
+        },
+        {
+          "id": "force_wheel",
+          "label": "Force the wheel to turn",
+          "next": "wheel_2",
+          "effects": {
+            "add": {
+              "village_morale": -5
+            },
+            "set": {
+              "water_supply": "damaged"
+            },
+            "remember": {
+              "mira": {
+                "forced_wheel": "Player forced the wheel and strained the old gears."
+              }
+            },
+            "record_choice": {
+              "id": "wheel_force",
+              "text": "Forced the waterwheel to turn."
+            }
+          }
+        }
+      ]
+    },
+    "wheel_2": {
+      "title": "The Last Gear",
+      "location": "old_waterwheel",
+      "text": "A trickle of water slips past the wheel. One gear remains to be seated before the channel to the village can open.",
+      "dialogue": [
+        {
+          "npc": "mira",
+          "line": "One more gear and we're done.",
+          "alts": [
+            {
+              "needs_memory": "helped_repair",
+              "line": "You were patient with the pin, so I trust you with the last gear. Seat it gently."
+            },
+            {
+              "needs_memory": "forced_wheel",
+              "line": "That shortcut cost us a gear. The last one has to be fitted carefully, understand?"
+            }
+          ]
+        }
+      ],
+      "choices": [
+        {
+          "id": "wheel_install",
+          "label": "Install the new gear Mira built",
+          "next": "village_epilogue",
+          "effects": {
+            "set": {
+              "water_supply": "restored"
+            },
+            "add": {
+              "village_morale": 15
+            },
+            "move_to": "whispering_village",
+            "complete_quest": "water_crisis",
+            "remember": {
+              "mira": {
+                "rebuilt_wheel": "Player finished rebuilding the waterwheel with Mira."
+              }
+            },
+            "record_choice": {
+              "id": "wheel_done",
+              "text": "Restored the water with a rebuilt waterwheel."
+            }
+          }
+        },
+        {
+          "id": "wheel_patch",
+          "label": "Patch it quickly and head back",
+          "next": "village_epilogue",
+          "effects": {
+            "add": {
+              "village_morale": 5
+            },
+            "move_to": "whispering_village",
+            "complete_quest": "water_crisis",
+            "remember": {
+              "mira": {
+                "patched_wheel": "Player left only a quick patch on the waterwheel."
+              }
+            },
+            "record_choice": {
+              "id": "wheel_patched",
+              "text": "Patched the waterwheel; the water runs weakly."
+            }
+          }
+        }
+      ]
+    },
+    "spirit_1": {
+      "title": "The Heart of the Pines",
+      "location": "whispering_forest",
+      "text": "Mist gathers between the pines. A soft light drifts toward you and settles into a shape like a deer made of dawn.",
+      "dialogue": [
+        {
+          "npc": "lumen",
+          "line": "Someone dammed my river's source with a thoughtless clatter. Why should I trust you?"
+        }
+      ],
+      "choices": [
+        {
+          "id": "offer_seed",
+          "label": "Apologise and offer a seed from the village",
+          "next": "spirit_2",
+          "effects": {
+            "add": {
+              "forest_spirit_trust": 25
+            },
+            "remember": {
+              "lumen": {
+                "offered_seed": "Player apologised and offered Lumen a village seed."
+              }
+            },
+            "record_choice": {
+              "id": "spirit_seed",
+              "text": "Apologised to Lumen and offered a seed."
+            }
+          }
+        },
+        {
+          "id": "demand_water",
+          "label": "Demand the water back",
+          "next": "spirit_2",
+          "effects": {
+            "add": {
+              "forest_spirit_trust": -15
+            },
+            "remember": {
+              "lumen": {
+                "demanded_water": "Player demanded water from Lumen."
+              }
+            },
+            "record_choice": {
+              "id": "spirit_demand",
+              "text": "Demanded the water from Lumen."
+            }
+          }
+        }
+      ]
+    },
+    "spirit_2": {
+      "title": "A Fragile Bargain",
+      "location": "whispering_forest",
+      "text": "The light dims, then steadies. Lumen waits for your next words.",
+      "dialogue": [
+        {
+          "npc": "lumen",
+          "line": "Speak your promise.",
+          "alts": [
+            {
+              "needs_memory": "offered_seed",
+              "line": "The seed was kind. Speak your promise, and I will listen."
+            },
+            {
+              "needs_memory": "demanded_water",
+              "line": "You demanded. Now try asking. Speak your promise."
+            }
+          ]
+        }
+      ],
+      "choices": [
+        {
+          "id": "protect_river",
+          "label": "Promise to protect the river",
+          "next": "village_epilogue",
+          "effects": {
+            "set": {
+              "water_supply": "restored"
+            },
+            "add": {
+              "forest_spirit_trust": 20,
+              "village_morale": 15
+            },
+            "move_to": "whispering_village",
+            "complete_quest": "water_crisis",
+            "remember": {
+              "lumen": {
+                "river_promise": "Player promised to protect the river."
+              }
+            },
+            "record_choice": {
+              "id": "spirit_done",
+              "text": "Promised Lumen to protect the river; the water returned."
+            }
+          }
+        },
+        {
+          "id": "ask_little",
+          "label": "Ask for just enough water to survive",
+          "next": "village_epilogue",
+          "effects": {
+            "set": {
+              "water_supply": "damaged"
+            },
+            "add": {
+              "forest_spirit_trust": 5,
+              "village_morale": 5
+            },
+            "move_to": "whispering_village",
+            "complete_quest": "water_crisis",
+            "remember": {
+              "lumen": {
+                "small_ask": "Player asked Lumen for only a little water."
+              }
+            },
+            "record_choice": {
+              "id": "spirit_small",
+              "text": "Asked Lumen for a small, steady flow."
+            }
+          }
+        }
+      ]
+    },
+    "underground_1": {
+      "title": "Beneath the Village",
+      "location": "whispering_village",
+      "text": "In the oldest cellar, damp stone hints at water close below. Mira brings measuring rods and a lantern.",
+      "dialogue": [
+        {
+          "npc": "mira",
+          "line": "If a spring sits under us, the rods will show it. Dig carefully or dig fast, your call."
+        }
+      ],
+      "choices": [
+        {
+          "id": "dig_careful",
+          "label": "Dig carefully, following Mira's measurements",
+          "next": "underground_2",
+          "effects": {
+            "add": {
+              "village_morale": 5
+            },
+            "set": {
+              "water_supply": "damaged"
+            },
+            "remember": {
+              "mira": {
+                "measured_spring": "Player dug carefully using Mira's measurements."
+              }
+            },
+            "record_choice": {
+              "id": "dig_careful",
+              "text": "Dug carefully with Mira."
+            }
+          }
+        },
+        {
+          "id": "dig_fast",
+          "label": "Rally the villagers to dig fast",
+          "next": "underground_2",
+          "effects": {
+            "add": {
+              "village_morale": 10
+            },
+            "set": {
+              "water_supply": "damaged"
+            },
+            "remember": {
+              "mira": {
+                "dug_fast": "Player rallied villagers to dig quickly."
+              }
+            },
+            "record_choice": {
+              "id": "dig_fast",
+              "text": "Rallied the villagers to dig fast."
+            }
+          }
+        }
+      ]
+    },
+    "underground_2": {
+      "title": "The Hidden Spring",
+      "location": "whispering_village",
+      "text": "Cold water wells up through the stone, clear and strong. The village will not go thirsty after all.",
+      "dialogue": [
+        {
+          "npc": "mira",
+          "line": "We found it!",
+          "alts": [
+            {
+              "needs_memory": "measured_spring",
+              "line": "Exactly where the rods said. Careful work pays off."
+            },
+            {
+              "needs_memory": "dug_fast",
+              "line": "Messy, but it worked! Next time, measure first."
+            }
+          ]
+        }
+      ],
+      "choices": [
+        {
+          "id": "channel_well",
+          "label": "Channel the spring into the village well",
+          "next": "village_epilogue",
+          "effects": {
+            "set": {
+              "water_supply": "restored"
+            },
+            "add": {
+              "village_morale": 15
+            },
+            "complete_quest": "water_crisis",
+            "remember": {
+              "mira": {
+                "channeled_spring": "Player channelled the hidden spring into the well."
+              }
+            },
+            "record_choice": {
+              "id": "spring_well",
+              "text": "Channelled the hidden spring into the village well."
+            }
+          }
+        },
+        {
+          "id": "share_valley",
+          "label": "Share the spring with the whole valley",
+          "next": "village_epilogue",
+          "effects": {
+            "set": {
+              "water_supply": "restored"
+            },
+            "add": {
+              "village_morale": 10,
+              "forest_spirit_trust": 10
+            },
+            "complete_quest": "water_crisis",
+            "remember": {
+              "mira": {
+                "shared_spring": "Player chose to share the spring with the valley."
+              }
+            },
+            "record_choice": {
+              "id": "spring_valley",
+              "text": "Shared the hidden spring with the whole valley."
+            }
+          }
+        }
+      ]
+    },
+    "village_epilogue": {
+      "title": "Water Returns to Whispering Village",
+      "location": "whispering_village",
+      "text": "The village gathers at the well. Whatever you chose, the silence is over, and people are talking again.",
+      "dialogue": [
+        {
+          "npc": "elder_oren",
+          "line": "You gave us back our voices, traveler."
+        },
+        {
+          "npc": "mira",
+          "line": "Come see me again soon.",
+          "alts": [
+            {
+              "needs_memory": "rebuilt_wheel",
+              "line": "That waterwheel runs better than ever. Thank you for helping me rebuild it."
+            },
+            {
+              "needs_memory": "patched_wheel",
+              "line": "The wheel holds for now, but we both know it needs real repairs."
+            },
+            {
+              "needs_memory": "channeled_spring",
+              "line": "I keep staring at that spring. Come see me, I have ideas for pumps."
+            },
+            {
+              "needs_memory": "shared_spring",
+              "line": "Sharing the spring with the valley was generous. I'm drawing up plans for a canal."
+            }
+          ]
+        },
+        {
+          "npc": "lumen",
+          "line": "The river remembers.",
+          "alts": [
+            {
+              "needs_memory": "river_promise",
+              "line": "I will hold you to your promise, river-keeper."
+            },
+            {
+              "needs_memory": "small_ask",
+              "line": "A small ask, quietly kept. I respect that."
+            }
+          ],
+          "only_if_alt": true
+        }
+      ],
+      "choices": []
+    }
+  }
+}

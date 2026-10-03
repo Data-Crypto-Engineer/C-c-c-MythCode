@@ -1,0 +1,4 @@
+# Phase 1 only needs Streamlit. Exact pins are added after the install is verified
+# on a real machine (Streamlit's current release was not confirmed in Phase 0).
+# CrewAI is added in Phase 3 (planned: crewai[google-genai]==1.15.23, unverified together with Streamlit).
+streamlit
